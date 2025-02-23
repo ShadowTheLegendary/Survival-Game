@@ -2,6 +2,7 @@
 #include <string>
 #include "Tileset.h"
 #include "Globals.h"
+#include "Hotbar.h"
 
 class Sprite {
 private:
@@ -60,11 +61,47 @@ public:
 
 		if (getBoard(breakXPos, breakYPos) == 'T')
 			hotbar.toHotbar('W', 4);
+		else if (getBoard(breakXPos, breakYPos) == 'S')
+			;
 		else 
 			hotbar.toHotbar(getBoard(breakXPos, breakYPos), 1);
 
 		toBoard(breakXPos, breakYPos, 'G');
 		toCollBoard(breakXPos, breakYPos, 0);
+	}
+
+	void place(std::string direction) {
+
+		int placeXPos = xPosition;
+		int placeYPos = yPosition;
+
+		if (direction == "right" && getCollBoard(placeXPos, placeYPos + 1) == 0) {
+			placeYPos++;
+		}
+		else if (direction == "left" && getCollBoard(placeXPos, placeYPos - 1) == 0) {
+			placeYPos--;
+		}
+		else if (direction == "up" && getCollBoard(placeXPos + 1, placeYPos) == 0) {
+			placeXPos++;
+		}
+		else if (direction == "down" && getCollBoard(placeXPos - 1, placeYPos) == 0) {
+			placeXPos--;
+		}
+		else
+			return;
+
+		if (std::islower(hotbar.getSelectedSlot()) || hotbar.getSelectedSlot() == '0')
+			return;
+		else if (hotbar.getSelectedSlot() == 'R') {
+			toBoard(placeXPos, placeYPos, 'S');
+			hotbar.toHotbar('R', -1);
+		}
+		else {
+			toBoard(placeXPos, placeYPos, hotbar.getSelectedSlot());
+			hotbar.toHotbar(std::toupper(hotbar.getSelectedSlot()), -1);
+		}
+
+		toCollBoard(placeXPos, placeYPos, 1);
 	}
 
 	void spawnSprite() {

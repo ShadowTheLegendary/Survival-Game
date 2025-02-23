@@ -73,7 +73,17 @@ public:
 					std::cout << Board[i][j] << interval;
 					Color(7);
 				}
+				else if (Board[i][j] == 'S') {
+					Color(8);
+					std::cout << Board[i][j] << interval;
+					Color(7);
+				}
 				else if (Board[i][j] == 'T') {
+					Color(2 | 4);
+					std::cout << Board[i][j] << interval;
+					Color(7);
+				}
+				else if (Board[i][j] == 'W') {
 					Color(2 | 4);
 					std::cout << Board[i][j] << interval;
 					Color(7);

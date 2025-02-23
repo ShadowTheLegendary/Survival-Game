@@ -16,42 +16,91 @@ int main()
     std::cout << player.getCoords();
 
     while (true) {
-        if (_kbhit()) {  
+        if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
+            player.moveSprite("left");
+            tile.writeBoard();
+            hotbar.writeHotbar();
+            std::cout << player.getCoords();
+        }
+        else if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
+            player.moveSprite("right");
+            tile.writeBoard();
+            hotbar.writeHotbar();
+            std::cout << player.getCoords();
+        }
+        else if (GetAsyncKeyState(VK_UP) & 0x8000) {
+            player.moveSprite("up");
+            tile.writeBoard();
+            hotbar.writeHotbar();
+            std::cout << player.getCoords();
+        }
+        else if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
+            player.moveSprite("down");
+            tile.writeBoard();
+            hotbar.writeHotbar();
+            std::cout << player.getCoords();
+        }
+
+        if (_kbhit()) {
             char ch = _getch(); 
 
             if (ch == 27) {
                 break;
             }
 
+            if (ch >= '0' && ch <= '9') {
+                int num = ch - '0';
+				hotbar.selectSlot(num);
+                tile.writeBoard();
+                hotbar.writeHotbar();
+                std::cout << player.getCoords();
+            }
+
             switch (ch) {
             case 'W':
-				player.mine("up");
+                player.place("up");
+                tile.writeBoard();
+                hotbar.writeHotbar();
+                std::cout << player.getCoords();
+                break;
             case 'w':
-                player.moveSprite("up");
+                player.mine("up");
                 tile.writeBoard();
 				hotbar.writeHotbar();
                 std::cout << player.getCoords();
                 break;
             case 'A':
-                player.mine("left");
+                player.place("left");
+                tile.writeBoard();
+                hotbar.writeHotbar();
+                std::cout << player.getCoords();
+                break;
             case 'a':
-                player.moveSprite("left");
+                player.mine("left");
                 tile.writeBoard();
                 hotbar.writeHotbar();
                 std::cout << player.getCoords();
                 break;
             case 'S':
-                player.mine("down");
+                player.place("down");
+                tile.writeBoard();
+                hotbar.writeHotbar();
+                std::cout << player.getCoords();
+                break;
             case 's':
-                player.moveSprite("down");
+                player.mine("down");
                 tile.writeBoard();
                 hotbar.writeHotbar();
                 std::cout << player.getCoords();
                 break;
             case 'D':
-                player.mine("right");
+                player.place("right");
+                tile.writeBoard();
+                hotbar.writeHotbar();
+                std::cout << player.getCoords();
+                break;
             case 'd':
-                player.moveSprite("right");
+                player.mine("right");
                 tile.writeBoard();
                 hotbar.writeHotbar();
                 std::cout << player.getCoords();
