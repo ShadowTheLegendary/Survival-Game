@@ -50,6 +50,10 @@ currentReadingMode mode = BOARDHEIGHT;
 
 void loadFile() {
 	std::ifstream file("save.txt");
+	if (!file.is_open()) {
+		std::cerr << "Error: Valid save file not found\n";
+		return;
+	}
 	std::string fileData;
 	file >> fileData;
 	std::string BoardHeightRead = "";
@@ -99,8 +103,10 @@ void loadFile() {
         }
 	}
 
-	if (std::stoi(BoardHeightRead) != boardHeight || std::stoi(BoardWidthRead) != boardWidth)
-		std::cerr << "Error: Board size does not match the current board size: (" << BoardHeightRead << ", " << BoardWidthRead << ") (" << boardHeight << ", " << boardWidth << ")\n";
+    if (std::stoi(BoardHeightRead) != boardHeight || std::stoi(BoardWidthRead) != boardWidth) {
+        std::cerr << "Error: Board size does not match the current board size: (" << BoardHeightRead << ", " << BoardWidthRead << ") (" << boardHeight << ", " << boardWidth << ")\n";
+        return;
+    }
 
 	int k = 0;
 	for (int i = 0; i < boardHeight; i++)
@@ -119,8 +125,10 @@ void loadFile() {
 			k++;
 		}
 
-	if (std::stoi(HotbarSizeRead) != hotbarsize)
-		std::cerr << "Error: Hotbar size does not match the current hotbar size: " << HotbarSizeRead << " != " << hotbarsize << "\n";
+    if (std::stoi(HotbarSizeRead) != hotbarsize) {
+        std::cerr << "Error: Hotbar size does not match the current hotbar size: " << HotbarSizeRead << " != " << hotbarsize << "\n";
+		return;
+    }
 
 	std::string hotbarBuffer = "";
 	int hotbarSlot = 0;
