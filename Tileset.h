@@ -3,7 +3,7 @@
 #include <windows.h>
 
 static const int boardHeight = 10;
-static const int boardWidth = 20;
+static const int boardWidth = 10;
 
 char Board[boardHeight][boardWidth];
 int collBoard[boardHeight][boardWidth];
@@ -64,34 +64,34 @@ public:
 			for (int j = 0; j < boardWidth; j++) {
 				if (Board[i][j] == 'G') {
 					Color(2);
-					std::cout << Board[i][j] << interval;
+					std::cout << Board[i][j] << interval << std::flush;
 					Color(7);
 
 				}
 				else if (Board[i][j] == 'R') {
 					Color(8);
-					std::cout << Board[i][j] << interval;
+					std::cout << Board[i][j] << interval << std::flush;
 					Color(7);
 				}
 				else if (Board[i][j] == 'S') {
 					Color(8);
-					std::cout << Board[i][j] << interval;
+					std::cout << Board[i][j] << interval << std::flush;
 					Color(7);
 				}
 				else if (Board[i][j] == 'T') {
 					Color(2 | 4);
-					std::cout << Board[i][j] << interval;
+					std::cout << Board[i][j] << interval << std::flush;
 					Color(7);
 				}
 				else if (Board[i][j] == 'W') {
 					Color(2 | 4);
-					std::cout << Board[i][j] << interval;
+					std::cout << Board[i][j] << interval << std::flush;
 					Color(7);
 				}
 				else
-					std::cout << Board[i][j] << interval;
+					std::cout << Board[i][j] << interval << std::flush;
 			}
-			std::cout << "\n";
+			std::cout << "\n" << std::flush;
 		}
 	}
 };

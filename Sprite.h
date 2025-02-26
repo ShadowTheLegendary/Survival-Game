@@ -4,6 +4,8 @@
 #include "Globals.h"
 #include "Hotbar.h"
 
+extern Hotbar hotbar;
+
 class Sprite {
 private:
 	int xPosition = 1;
@@ -106,5 +108,10 @@ public:
 
 	void spawnSprite() {
 		toBoard(xPosition, yPosition, sprite);
+	}
+
+	void setCoords(int x, int y) {
+		xPosition = x;
+		yPosition = y;
 	}
 };
