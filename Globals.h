@@ -11,6 +11,12 @@ TileBoard tile;
 Hotbar hotbar;
 Sprite player;
 
+void writeAll() {
+    tile.writeBoard();
+    hotbar.writeHotbar();
+    std::cout << player.getCoords();
+}
+
 void saveFile() {
 	std::string fileData = "";
 	fileData += std::to_string(boardHeight) + "|" + std::to_string(boardWidth) + "|";
@@ -111,7 +117,7 @@ void loadFile() {
 	int k = 0;
 	for (int i = 0; i < boardHeight; i++)
 		for (int j = 0; j < boardWidth; j++) {
-            if (Board[i][j] == '@')
+            if (BoardRead[k] == '@')
 				Board[i][j] = 'G';
             else
 			    Board[i][j] = BoardRead[k];
@@ -151,15 +157,15 @@ void loadFile() {
 
 	player.setCoords(xCoordRead, yCoordRead);
 	player.spawnSprite();
+
+    writeAll();
 }
 
 void gameStart() {
     hotbar.hotbarSettup();
     tile.terrainGen();
     player.spawnSprite();
-    tile.writeBoard();
-    hotbar.writeHotbar();
-    std::cout << player.getCoords();
+    writeAll();
 
     while (true) {
         if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) // Escape key (exit)
@@ -167,30 +173,22 @@ void gameStart() {
 
         if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
             player.moveSprite("left");
-            tile.writeBoard();
-            hotbar.writeHotbar();
-            std::cout << player.getCoords();
+            writeAll();
             Sleep(50);
         }
         else if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
             player.moveSprite("right");
-            tile.writeBoard();
-            hotbar.writeHotbar();
-            std::cout << player.getCoords();
+            writeAll();
             Sleep(50);
         }
         else if (GetAsyncKeyState(VK_UP) & 0x8000) {
             player.moveSprite("up");
-            tile.writeBoard();
-            hotbar.writeHotbar();
-            std::cout << player.getCoords();
+            writeAll();
             Sleep(50);
         }
         else if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
             player.moveSprite("down");
-            tile.writeBoard();
-            hotbar.writeHotbar();
-            std::cout << player.getCoords();
+            writeAll();
             Sleep(50);
         }
 
@@ -198,30 +196,22 @@ void gameStart() {
         while (GetAsyncKeyState(VK_LSHIFT) & 0x8000) { // Shift plus arrow keys (Mining)
             if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
                 player.mine("left");
-                tile.writeBoard();
-                hotbar.writeHotbar();
-                std::cout << player.getCoords();
+                writeAll();
                 Sleep(50);
             }
             else if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
                 player.mine("right");
-                tile.writeBoard();
-                hotbar.writeHotbar();
-                std::cout << player.getCoords();
+                writeAll();
                 Sleep(50);
             }
             else if (GetAsyncKeyState(VK_UP) & 0x8000) {
                 player.mine("up");
-                tile.writeBoard();
-                hotbar.writeHotbar();
-                std::cout << player.getCoords();
+                writeAll();
                 Sleep(50);
             }
             else if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
                 player.mine("down");
-                tile.writeBoard();
-                hotbar.writeHotbar();
-                std::cout << player.getCoords();
+                writeAll();
                 Sleep(50);
             }
         }
@@ -229,16 +219,12 @@ void gameStart() {
         while (GetAsyncKeyState(VK_LCONTROL) & 0x8000) { // Control plus arrow keys (Building)
             if (GetAsyncKeyState(VK_LEFT) & 0x8000) {
                 player.place("left");
-                tile.writeBoard();
-                hotbar.writeHotbar();
-                std::cout << player.getCoords();
+                writeAll();
                 Sleep(50);
             }
             else if (GetAsyncKeyState(VK_RIGHT) & 0x8000) {
                 player.place("right");
-                tile.writeBoard();
-                hotbar.writeHotbar();
-                std::cout << player.getCoords();
+                writeAll();
                 Sleep(50);
             }
             else if (GetAsyncKeyState(VK_UP) & 0x8000) {
