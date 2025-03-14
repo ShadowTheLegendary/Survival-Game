@@ -7,6 +7,7 @@
 extern Hotbar hotbar;
 
 class Sprite {
+	/*Sprite class that represents the player, but can be used to represent a NPC (Non Player Charecter)*/
 private:
 	int xPosition = 1;
 	int yPosition = 1;

@@ -7,6 +7,7 @@ char topHotbar[hotbarsize];
 int bottomHotbar[hotbarsize];
 
 class Hotbar {
+	/*Hotbar class that represents the players inventory*/
 private:
 	std::string interval = " ";
 

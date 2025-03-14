@@ -75,8 +75,6 @@ void loadFile() {
 	for (int i = 0; i < fileData.size(); i++) {
 		if (fileData[i] == '|')
 			mode = static_cast<currentReadingMode>(mode + 1);
-		//else if (fileData[i] == ',')
-			//continue;
 		else if (mode == BOARDHEIGHT)
 			BoardHeightRead += fileData[i];
 		else if (mode == BOARDWIDTH)
@@ -243,12 +241,12 @@ void gameStart() {
             }
         }
 
-        if (GetAsyncKeyState(VK_RCONTROL) & 0x8000) {
+        if (GetAsyncKeyState(VK_RCONTROL) & 0x8000) { // Right control for saving
             saveFile();
             Sleep(500);
         }
 
-        if (GetAsyncKeyState(VK_RSHIFT) & 0x8000) {
+        if (GetAsyncKeyState(VK_RSHIFT) & 0x8000) { // Right shift for loading file
             loadFile();
             Sleep(500);
         }

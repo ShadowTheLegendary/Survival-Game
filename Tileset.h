@@ -26,6 +26,7 @@ int getCollBoard(int xPos, int yPos) {
 }
 
 class TileBoard {
+	/*TileBoard class that represents the game board*/
 private:
 	std::string interval = " ";
 
