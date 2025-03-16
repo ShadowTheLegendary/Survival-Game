@@ -2,6 +2,6 @@
 
 int main()
 {
-	gameStart();
+	start_program();
 	return 0;
 }
