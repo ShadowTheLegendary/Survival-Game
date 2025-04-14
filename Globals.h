@@ -8,18 +8,18 @@
 #include "Hotbar.h"
 #include "Menu.h"
 
-TileBoard tile;
+Tileboard tile;
 Hotbar hotbar;
 Sprite player;
 menu_manager menu;
 
 void writeAll() {
-    tile.writeBoard();
+    tile.write_board();
     hotbar.writeHotbar();
     std::cout << player.getCoords();
 }
 
-void saveFile() {
+/*void saveFile() {
 	std::string fileData = "";
 	fileData += std::to_string(boardHeight) + "|" + std::to_string(boardWidth) + "|";
 	for (int i = 0; i < boardHeight; i++)
@@ -159,15 +159,15 @@ void loadFile() {
 	player.spawnSprite();
 
     writeAll();
-}
+}*/
 
 void run_game() {
     writeAll();
 
     while (true) {
-        if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) { // Escape key (pausing)
             system("cls");
-            menu.update_state(3, 0); // Pauses the game
+            menu.update_state(3, 0);
             return;
         }
 
@@ -229,27 +229,23 @@ void run_game() {
             }
             else if (GetAsyncKeyState(VK_UP) & 0x8000) {
                 player.place("up");
-                tile.writeBoard();
-                hotbar.writeHotbar();
-                std::cout << player.getCoords();
+                writeAll();
                 Sleep(50);
             }
             else if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
                 player.place("down");
-                tile.writeBoard();
-                hotbar.writeHotbar();
-                std::cout << player.getCoords();
+                writeAll();
                 Sleep(50);
             }
         }
 
         if (GetAsyncKeyState(VK_RCONTROL) & 0x8000) { // Right control for saving
-            saveFile();
+            //saveFile();
             Sleep(500);
         }
 
         if (GetAsyncKeyState(VK_RSHIFT) & 0x8000) { // Right shift for loading file
-            loadFile();
+            //loadFile();
             Sleep(500);
         }
 
@@ -258,9 +254,7 @@ void run_game() {
 
             if (input >= '0' && input <= '9') {
                 hotbar.selectSlot(input - '0');
-                tile.writeBoard();
-                hotbar.writeHotbar();
-                std::cout << player.getCoords();
+                writeAll();
             }
         }
     }
@@ -268,7 +262,7 @@ void run_game() {
 
 void start_program() {
     hotbar.hotbarSettup();
-    tile.terrainGen();
+    tile.terrain_gen();
     player.spawnSprite();
     int button = 1;
     std::string menu_options[4] = {"", "Play", "Settings", "Quit"};
@@ -331,9 +325,9 @@ void start_program() {
                     system("cls");
                     menu.update_state(1, 1);
                 }
-                if (pause_options[button] == "Save") {
-                    saveFile();
-                }
+                //if (pause_options[button] == "Save") {
+                    //saveFile();
+                //}
                 //if (pause_options[button] == "Load") {
                 //    loadFile();
                 //}

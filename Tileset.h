@@ -1,98 +1,103 @@
 #pragma once
 #include <iostream>
 #include <windows.h>
+#include <array>
+#include "character_matrix.h"
 
-static const int boardHeight = 10;
-static const int boardWidth = 10;
-
-char Board[boardHeight][boardWidth];
-int collBoard[boardHeight][boardWidth];
-int generate[boardHeight][boardWidth];
-
-void toBoard(int xPos, int yPos, char z) {
-	Board[boardHeight - xPos][yPos - 1] = z;
-}
-
-void toCollBoard(int xPos, int yPos, int z) {
-	collBoard[boardHeight - xPos][yPos - 1] = z;
-}
-
-char getBoard(int xPos, int yPos) {
-	return Board[boardHeight - xPos][yPos - 1];
-}
-
-int getCollBoard(int xPos, int yPos) {
-	return collBoard[boardHeight - xPos][yPos - 1];
-}
-
-class TileBoard {
-	/*TileBoard class that represents the game board*/
+class Tileboard {  
+/*TileBoard class that represents the game board*/  
 private:
-	std::string interval = " ";
+	int board_height = 10;
+	int board_width = 10;
 
-	void Color(int color)
-	{
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+	character_matrix board;
+	std::string interval = " ";  
+
+	std::array<int, 4> get_neighbors(int x, int y) {
+		std::array<int, 4> arr = { 0, 0, 0, 0 };
+		switch (board.get_matrix(x - 1, y)) {
+		case 'G':
+			arr[0]++;
+			break;
+		case 'R':
+			arr[1]++;
+			break;
+		case 'T':
+			arr[2]++;
+			break;
+		}
+		return arr;
+	}
+
+	bool random_percent(int percent) {
+		int random_number = rand()%100 + 1;
+		if (random_number <= percent)
+			return true;
+		else
+			return false;
 	}
 
 public:
-	void terrainGen() {
+	Tileboard() : board(board_width, board_height, 'G', " ") {}
+
+	void to_board(int x_pos, int y_pos, char z) {
+		board.to_matrix(x_pos, y_pos, z);
+	}
+
+	char get_board(int x_pos, int y_pos) {
+		return board.get_matrix(x_pos, y_pos);
+	}
+
+	void terrain_gen() {
 		srand(time(0));
-		for (int i = 0; i < boardHeight; i++) {
-			for (int j = 0; j < boardWidth; j++) {
-				generate[i][j] = rand() % 10;
+		for (int i = 1; i <= board_width; i++) {
+			for (int j = 1; j <= board_height; j++) {
+				std::array<int, 4> neighbors = get_neighbors(i, j);
+				int chance = 20;
+				chance += neighbors[1] * 35;
+				if (chance >= 100) {
+					board.to_matrix(i, j, 'R');
+				}
+				else if (chance <= 0) {
+					continue;
+				}
+				else {
+					if (random_percent(chance)) {
+						board.to_matrix(i, j, 'R');
+					}
+					else {
+						continue;
+					}
+				}
 			}
 		}
-		for (int i = 0; i < boardHeight; i++) {
-			for (int j = 0; j < boardWidth; j++) {
-				if (generate[i][j] == 0 || generate[i][j] == 1) {
-					Board[i][j] = 'R';
-					collBoard[i][j] = 1;
+
+		for (int i = 1; i <= board_width; i++) {
+			for (int j = 1; j <= board_height; j++) {
+				std::array<int, 4> neighbors = get_neighbors(i, j);
+				int chance = 15;
+				chance -= neighbors[1] * 30;
+				chance -= neighbors[2] * 10;
+				if (chance >= 100) {
+					board.to_matrix(i, j, 'T');
 				}
-				else if (generate[i][j] == 2) {
-					Board[i][j] = 'T';
-					collBoard[i][j] = 1;
+				else if (chance <= 0) {
+					continue;
 				}
-				else if (generate[i][j] > 2)
-					Board[i][j] = 'G';
+				else {
+					if (random_percent(chance)) {
+						board.to_matrix(i, j, 'T');
+					}
+					else {
+						continue;
+					}
+				}
 			}
 		}
 	}
 
-	void writeBoard() {
+	void write_board() {  
 		system("cls");
-		for (int i = 0; i < boardHeight; i++) {
-			for (int j = 0; j < boardWidth; j++) {
-				if (Board[i][j] == 'G') {
-					Color(2);
-					std::cout << Board[i][j] << interval << std::flush;
-					Color(7);
-
-				}
-				else if (Board[i][j] == 'R') {
-					Color(8);
-					std::cout << Board[i][j] << interval << std::flush;
-					Color(7);
-				}
-				else if (Board[i][j] == 'S') {
-					Color(8);
-					std::cout << Board[i][j] << interval << std::flush;
-					Color(7);
-				}
-				else if (Board[i][j] == 'T') {
-					Color(2 | 4);
-					std::cout << Board[i][j] << interval << std::flush;
-					Color(7);
-				}
-				else if (Board[i][j] == 'W') {
-					Color(2 | 4);
-					std::cout << Board[i][j] << interval << std::flush;
-					Color(7);
-				}
-				else
-					std::cout << Board[i][j] << interval << std::flush;
-			}
-			std::cout << "\n" << std::flush;
-		}
+		board.custom_print_matrix();
 	}
 };

@@ -5,6 +5,7 @@
 #include "Hotbar.h"
 
 extern Hotbar hotbar;
+extern Tileboard tile;
 
 class Sprite {
 	/*Sprite class that represents the player, but can be used to represent a NPC (Non Player Charecter)*/
@@ -18,28 +19,25 @@ public:
 	}
 
 	void moveSprite(std::string direction) {
+		tile.to_board(xPosition, yPosition, 'G');
 
-		toBoard(xPosition, yPosition, 'G');
-		toCollBoard(xPosition, yPosition, 0);
-
-		if (direction == "right" && getCollBoard(xPosition, yPosition + 1) == 0) {
-			yPosition++;
-		}
-		else if (direction == "left" && getCollBoard(xPosition, yPosition - 1) == 0) {
-			yPosition--;
-		}
-		else if (direction == "up" && getCollBoard(xPosition + 1, yPosition) == 0) {
+		if (direction == "right" && tile.get_board(xPosition + 1, yPosition) == 'G') {
 			xPosition++;
 		}
-		else if (direction == "down" && getCollBoard(xPosition - 1, yPosition) == 0) {
+		else if (direction == "left" && tile.get_board(xPosition - 1, yPosition) == 'G') {
 			xPosition--;
 		}
+		else if (direction == "up" && tile.get_board(xPosition, yPosition + 1) == 'G') {
+			yPosition++;
+		}
+		else if (direction == "down" && tile.get_board(xPosition, yPosition - 1) == 'G') {
+			yPosition--;
+		}
 		else {
-			toBoard(xPosition, yPosition, sprite);
+			tile.to_board(xPosition, yPosition, sprite);
 			return;
 		}
-
-		toBoard(xPosition, yPosition, sprite);
+		tile.to_board(xPosition, yPosition, sprite);
 	}
 
 	void mine(std::string direction) {
@@ -47,30 +45,29 @@ public:
 		int breakXPos = xPosition;
 		int breakYPos = yPosition;
 
-		if (direction == "right" && getCollBoard(breakXPos, breakYPos + 1) == 1) {
-			breakYPos++;
-		}
-		else if (direction == "left" && getCollBoard(breakXPos, breakYPos - 1) == 1) {
-			breakYPos--;
-		}
-		else if (direction == "up" && getCollBoard(breakXPos + 1, breakYPos) == 1) {
+		if (direction == "right" && tile.get_board(breakXPos + 1, breakYPos) != 'G') {
 			breakXPos++;
 		}
-		else if (direction == "down" && getCollBoard(breakXPos - 1, breakYPos) == 1) {
+		else if (direction == "left" && tile.get_board(breakXPos - 1, breakYPos) != 'G') {
 			breakXPos--;
+		}
+		else if (direction == "up" && tile.get_board(breakXPos, breakYPos + 1) != 'G') {
+			breakYPos++;
+		}
+		else if (direction == "down" && tile.get_board(breakXPos, breakYPos - 1) != 'G') {
+			breakYPos--;
 		}
 		else 
 			return;
 
-		if (getBoard(breakXPos, breakYPos) == 'T')
+		if (tile.get_board(breakXPos, breakYPos) == 'T')
 			hotbar.toHotbar('W', 4);
-		else if (getBoard(breakXPos, breakYPos) == 'S')
-			;
+		else if (tile.get_board(breakXPos, breakYPos) == 'S')
+			; // Janky 'pass' code
 		else 
-			hotbar.toHotbar(getBoard(breakXPos, breakYPos), 1);
+			hotbar.toHotbar(tile.get_board(breakXPos, breakYPos), 1);
 
-		toBoard(breakXPos, breakYPos, 'G');
-		toCollBoard(breakXPos, breakYPos, 0);
+		tile.to_board(breakXPos, breakYPos, 'G');
 	}
 
 	void place(std::string direction) {
@@ -78,17 +75,17 @@ public:
 		int placeXPos = xPosition;
 		int placeYPos = yPosition;
 
-		if (direction == "right" && getCollBoard(placeXPos, placeYPos + 1) == 0) {
-			placeYPos++;
-		}
-		else if (direction == "left" && getCollBoard(placeXPos, placeYPos - 1) == 0) {
-			placeYPos--;
-		}
-		else if (direction == "up" && getCollBoard(placeXPos + 1, placeYPos) == 0) {
+		if (direction == "right" && tile.get_board(placeXPos + 1, placeYPos) == 'G') {
 			placeXPos++;
 		}
-		else if (direction == "down" && getCollBoard(placeXPos - 1, placeYPos) == 0) {
+		else if (direction == "left" && tile.get_board(placeXPos - 1, placeYPos) == 'G') {
 			placeXPos--;
+		}
+		else if (direction == "up" && tile.get_board(placeXPos, placeYPos + 1) == 'G') {
+			placeYPos++;
+		}
+		else if (direction == "down" && tile.get_board(placeXPos, placeYPos - 1) == 'G') {
+			placeYPos--;
 		}
 		else
 			return;
@@ -96,19 +93,17 @@ public:
 		if (std::islower(hotbar.getSelectedSlot()) || hotbar.getSelectedSlot() == '0')
 			return;
 		else if (hotbar.getSelectedSlot() == 'R') {
-			toBoard(placeXPos, placeYPos, 'S');
+			tile.to_board(placeXPos, placeYPos, 'S');
 			hotbar.toHotbar('R', -1);
 		}
 		else {
-			toBoard(placeXPos, placeYPos, hotbar.getSelectedSlot());
+			tile.to_board(placeXPos, placeYPos, hotbar.getSelectedSlot());
 			hotbar.toHotbar(std::toupper(hotbar.getSelectedSlot()), -1);
 		}
-
-		toCollBoard(placeXPos, placeYPos, 1);
 	}
 
 	void spawnSprite() {
-		toBoard(xPosition, yPosition, sprite);
+		tile.to_board(xPosition, yPosition, sprite);
 	}
 
 	void setCoords(int x, int y) {
