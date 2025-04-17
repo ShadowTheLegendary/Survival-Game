@@ -133,6 +133,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Hotbar.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Misc_functions.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Tileset.h" />
   </ItemGroup>

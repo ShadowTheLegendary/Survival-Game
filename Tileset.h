@@ -48,6 +48,16 @@ public:
 		return board.get_matrix(x_pos, y_pos);
 	}
 
+	std::string save() {
+		return board.to_save_string();
+	}
+
+	void load(std::string save) {
+		board.from_save_string(save);
+		board_height = board.matrix_height;
+		board_width = board.matrix_height;return;
+	}
+
 	void terrain_gen() {
 		srand(time(0));
 		for (int i = 1; i <= board_width; i++) {

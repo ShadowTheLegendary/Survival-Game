@@ -3,17 +3,13 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <sstream>
+#include "Misc_functions.h"
 
 class character_matrix {
 private:
-    void color(int color) {
-        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
-    }
-
     std::vector<std::vector<char>> height_vec;
     std::vector<char> width_vec;
-    int matrix_height = 0;
-    int matrix_width = 0;
     char default_char = '0';
     std::string char_buffer = " ";
 public:
@@ -31,6 +27,9 @@ public:
         }
         std::reverse(height_vec.begin(), height_vec.end());
     }
+
+    int matrix_height = 0;
+    int matrix_width = 0;
 
     void to_matrix(int x, int y, char z, bool shifting = true) {
         std::vector<char> buffer;
@@ -66,6 +65,38 @@ public:
         
         buffer = height_vec[y];
         return buffer[x];
+    }
+
+    std::string to_save_string() {
+        std::string save = "";
+        save += std::to_string(matrix_height) + '|' + std::to_string(matrix_width) + '|';
+        save += default_char + char_buffer + '|';
+
+        for (int i = 0; i < matrix_height; i++) {
+            std::vector<char> buffer = height_vec[i];
+            for (int j = 0; j < matrix_width; j++) {
+                save += buffer[j];
+            }
+        }
+        return save;
+    }
+
+    void from_save_string(std::string save) {
+        std::vector<std::string> parts = split(save, '|');
+        resize(stoi(parts[0]), stoi(parts[1]));
+        default_char = parts[2][0];
+        char_buffer = parts[2].substr(1);
+
+        int iterator = 0;
+        for (int i = 0; i < matrix_height; i++) {
+            std::vector<char> buffer = height_vec[i];
+            for (int j = 0; j < matrix_width; j++) {
+                buffer[j] = parts[3][iterator];
+                iterator++;
+            }
+            height_vec[i] = buffer;
+        }
+        return;
     }
 
     void print_matrix() {

@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <vector>
+#include <algorithm>
 #include <fstream>
 #include <windows.h>
 #include <conio.h>
@@ -19,147 +21,48 @@ void writeAll() {
     std::cout << player.getCoords();
 }
 
-/*void saveFile() {
-	std::string fileData = "";
-	fileData += std::to_string(boardHeight) + "|" + std::to_string(boardWidth) + "|";
-	for (int i = 0; i < boardHeight; i++)
-		for (int j = 0; j < boardWidth; j++) {
-			fileData += Board[i][j];
-		}
-	fileData += "|";
-	for (int i = 0; i < boardHeight; i++)
-		for (int j = 0; j < boardWidth; j++)
-			fileData += std::to_string(collBoard[i][j]);
-	fileData += "|" + std::to_string(hotbarsize) + "|";
-	for (int i = 0; i < hotbarsize; i++)
-		fileData += topHotbar[i];
-	fileData += "|";
-	for (int i = 0; i < hotbarsize; i++)
-		fileData += std::to_string(bottomHotbar[i]) + ',';
-	fileData += "|" + player.getCoords();
-	std::ofstream file("save.txt");
-	file.clear();
-	file << fileData;
+void save_file() {
+    std::string save = tile.save();
+    std::ofstream board_file("board_save.txt");
+    board_file << save;
+    board_file.close();
+    save = hotbar.save();
+    std::ofstream file("hotbar_save.txt");
+    file << save;
+    file.close();
+    save = player.getCoords();
+    std::ofstream player_file("player_save.txt");
+    player_file << save;
+    player_file.close();
 }
 
-enum currentReadingMode {
-	BOARDHEIGHT = 1,
-	BOARDWIDTH = 2,
-	BOARD = 3,
-	COLLBOARD = 4,
-	HOTBARSIZE = 5,
-	HOTBAR = 6,
-	BOTTOMHOTBAR = 7,
-	COORDS1 = 8,
-	COORDS2 = 9
-};
-
-currentReadingMode mode = BOARDHEIGHT;
-
-void loadFile() {
-	std::ifstream file("save.txt");
-	if (!file.is_open()) {
-		std::cerr << "Error: Valid save file not found\n";
-		return;
-	}
-	std::string fileData;
-	file >> fileData;
-	std::string BoardHeightRead = "";
-	std::string BoardWidthRead = "";
-	std::string BoardRead = "";
-	std::string CollBoardRead = "";
-	std::string HotbarSizeRead = "";
-	std::string TopHotbarRead = "";
-	std::string BottomHotbarRead = "";
-    int xCoordRead = 0;
-	int yCoordRead = 0;
-
-	for (int i = 0; i < fileData.size(); i++) {
-		if (fileData[i] == '|')
-			mode = static_cast<currentReadingMode>(mode + 1);
-		else if (mode == BOARDHEIGHT)
-			BoardHeightRead += fileData[i];
-		else if (mode == BOARDWIDTH)
-			BoardWidthRead += fileData[i];
-		else if (mode == BOARD)
-			BoardRead += fileData[i];
-		else if (mode == COLLBOARD)
-			CollBoardRead += fileData[i];
-		else if (mode == HOTBARSIZE)
-			HotbarSizeRead += fileData[i];
-		else if (mode == HOTBAR)
-			TopHotbarRead += fileData[i];
-		else if (mode == BOTTOMHOTBAR)
-			BottomHotbarRead += fileData[i];
-        else if (mode == COORDS1) {
-            if (fileData[i] == ',')
-                mode = COORDS2;
-            else if (fileData[i] == '(')
-                continue;
-            else
-                xCoordRead = fileData[i] - '0';
-        }
-        else if (mode == COORDS2) {
-            if (fileData[i] == ',')
-                continue;
-            else if (fileData[i] == ' ')
-                continue;
-            else
-                yCoordRead = fileData[i] - '0';
-        }
-	}
-
-    if (std::stoi(BoardHeightRead) != boardHeight || std::stoi(BoardWidthRead) != boardWidth) {
-        std::cerr << "Error: Board size does not match the current board size: (" << BoardHeightRead << ", " << BoardWidthRead << ") (" << boardHeight << ", " << boardWidth << ")\n";
-        return;
+void load_file() {
+    system("cls");
+    std::string save = "";
+    std::ifstream board_file("board_save.txt");
+    std::string line;
+    while (std::getline(board_file, line)) {
+        save += line;
     }
-
-	int k = 0;
-	for (int i = 0; i < boardHeight; i++)
-		for (int j = 0; j < boardWidth; j++) {
-            if (BoardRead[k] == '@')
-				Board[i][j] = 'G';
-            else
-			    Board[i][j] = BoardRead[k];
-			k++;
-		}
-
-	k = 0;
-	for (int i = 0; i < boardHeight; i++)
-		for (int j = 0; j < boardWidth; j++) {
-            collBoard[i][j] = CollBoardRead[k] - '0';
-			k++;
-		}
-
-    if (std::stoi(HotbarSizeRead) != hotbarsize) {
-        std::cerr << "Error: Hotbar size does not match the current hotbar size: " << HotbarSizeRead << " != " << hotbarsize << "\n";
-		return;
+    board_file.close();
+    tile.load(save);
+    save = "";
+    std::ifstream file("hotbar_save.txt");
+    file >> save;
+    file.close();
+    save = "";
+    std::ifstream player_file("player_save.txt");
+    while (std::getline(player_file, line)) {
+        save += line;
     }
-
-	std::string hotbarBuffer = "";
-	int hotbarSlot = 0;
-
-    for (int i = 0; i < TopHotbarRead.size(); i++) {
-		topHotbar[i] = TopHotbarRead[i];
-    }
-
-	hotbarSlot = 0;
-
-    for (int i = 0; i < BottomHotbarRead.size(); i++) {
-        if (BottomHotbarRead[i] == ',') {
-			bottomHotbar[hotbarSlot] = std::stoi(hotbarBuffer);
-			hotbarBuffer = "";
-            hotbarSlot++;
-        }
-		else
-			hotbarBuffer += BottomHotbarRead[i];
-    }
-
-	player.setCoords(xCoordRead, yCoordRead);
-	player.spawnSprite();
-
+    player_file.close();
+    std::replace(save.begin(), save.end(), '(', ' ');
+    std::replace(save.begin(), save.end(), ')', ' ');
+    save.erase(std::remove_if(save.begin(), save.end(), ::isspace), save.end());
+    std::vector<std::string> coords = split(save, ',');
+    player.setCoords(stoi(coords[0]), stoi(coords[1]));
     writeAll();
-}*/
+}
 
 void run_game() {
     writeAll();
@@ -240,12 +143,12 @@ void run_game() {
         }
 
         if (GetAsyncKeyState(VK_RCONTROL) & 0x8000) { // Right control for saving
-            //saveFile();
+            save_file();
             Sleep(500);
         }
 
         if (GetAsyncKeyState(VK_RSHIFT) & 0x8000) { // Right shift for loading file
-            //loadFile();
+            load_file();
             Sleep(500);
         }
 
@@ -325,12 +228,12 @@ void start_program() {
                     system("cls");
                     menu.update_state(1, 1);
                 }
-                //if (pause_options[button] == "Save") {
-                    //saveFile();
-                //}
-                //if (pause_options[button] == "Load") {
-                //    loadFile();
-                //}
+                if (pause_options[button] == "Save") {
+                    save_file();
+                }
+                if (pause_options[button] == "Load") {
+                    load_file();
+                }
             }
         }
     }
