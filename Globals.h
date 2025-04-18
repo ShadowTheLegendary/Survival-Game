@@ -40,6 +40,10 @@ void load_file() {
     system("cls");
     std::string save = "";
     std::ifstream board_file("board_save.txt");
+    if (!board_file.is_open()) {
+        std::cerr << "ERROR: 'board_save.txt' does not exist";
+        return;
+    }
     std::string line;
     while (std::getline(board_file, line)) {
         save += line;
@@ -48,10 +52,18 @@ void load_file() {
     tile.load(save);
     save = "";
     std::ifstream file("hotbar_save.txt");
+    if (!file.is_open()) {
+        std::cerr << "ERROR: 'hotbar_save.txt' does not exist";
+        return;
+    }
     file >> save;
     file.close();
     save = "";
     std::ifstream player_file("player_save.txt");
+    if (!player_file.is_open()) {
+        std::cerr << "ERROR: 'player_save.txt' does not exist";
+        return;
+    }
     while (std::getline(player_file, line)) {
         save += line;
     }
