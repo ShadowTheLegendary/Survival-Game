@@ -13,7 +13,7 @@
 Tileboard tile;
 Hotbar hotbar;
 Sprite player;
-menu_manager menu;
+Menu menu;
 
 void writeAll() {
     tile.write_board();
@@ -82,7 +82,8 @@ void run_game() {
     while (true) {
 		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) { // Escape key (pausing)
             system("cls");
-            menu.update_state(3, 0);
+            menu.select_menu();
+			menu.print_menu();
             return;
         }
 
@@ -176,77 +177,48 @@ void run_game() {
 }
 
 void start_program() {
+    menu.add_menu("Survival Game", { "play", "settings", "quit" }, { 2, 4, 5 }, 1);
+    menu.add_menu("", { "pause" }, { 3 }, 2);
+    menu.add_menu("Game Paused", { "continue", "quit to menu", "settings", "save", "load" }, { 2, 1, 4, 6, 7 }, 3);
+    menu.add_id(5);
+	menu.add_id(6);
+	menu.add_id(7);
     hotbar.hotbarSettup();
     tile.terrain_gen();
     player.spawnSprite();
-    int button = 1;
-    std::string menu_options[4] = {"", "Play", "Settings", "Quit"};
-    std::string pause_options[6] = { "", "Continue", "Quit", "Settings", "Save", "Load"};
-    menu.update_state(1, 1);
+	menu.print_menu();
     while (true) {
-        while (menu.get_state() == 1) {
+        while (menu.current_id == 1 || menu.current_id == 3) {
             if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-                if (!(button + 1 > 3))
-                    button++;
+                menu.select_button(menu.current_button + 1);
                 system("cls");
-                menu.update_state(1, button);
+                menu.print_menu();
                 Sleep(50);
             }
             if (GetAsyncKeyState(VK_UP) & 0x8000) {
-                if (!(button - 1 < 1))
-                    button--;
+                menu.select_button(menu.current_button - 1);
                 system("cls");
-                menu.update_state(1, button);
+                menu.print_menu();
                 Sleep(50);
             }
             if (GetAsyncKeyState(VK_RETURN) & 0x8000) {
-                if (menu_options[button] == "Play") {
-                    menu.update_state(4, 1);
-                    system("cls");
-                    run_game();
-                    Sleep(50);
-                }
-                if (menu_options[button] == "Quit") {
-                    system("cls");
-                    std::cout << "Goodbye!";
-                    return;
+                system("cls");
+                menu.select_menu();
+                if (menu.current_id == 1) {
+                    menu.print_menu();
                 }
             }
         }
 
-        while (menu.get_state() == 3) {
-            if (GetAsyncKeyState(VK_DOWN) & 0x8000) {
-                if (!(button + 1 > 5))
-                    button++;
-                system("cls");
-                menu.update_state(3, button);
-                Sleep(50);
-            }
-            if (GetAsyncKeyState(VK_UP) & 0x8000) {
-                if (!(button - 1 < 1))
-                    button--;
-                system("cls");
-                menu.update_state(3, button);
-                Sleep(50);
-            }
-            if (GetAsyncKeyState(VK_RETURN) & 0x8000) {
-                if (pause_options[button] == "Continue") {
-                    menu.update_state(4, 1);
-                    system("cls");
-                    run_game();
-                    Sleep(50);
-                }
-                if (pause_options[button] == "Quit") {
-                    system("cls");
-                    menu.update_state(1, 1);
-                }
-                if (pause_options[button] == "Save") {
-                    save_file();
-                }
-                if (pause_options[button] == "Load") {
-                    load_file();
-                }
-            }
+		while (menu.current_id == 2) {
+			system("cls");
+			run_game();
+		}
+
+        while (menu.current_id == 5) {
+			system("cls");
+            std::cout << "Goodbye!";
+            return;
         }
     }
 }
