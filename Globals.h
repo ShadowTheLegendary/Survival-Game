@@ -14,6 +14,7 @@ Tileboard tile;
 Hotbar hotbar;
 Sprite player;
 Menu menu;
+std::string game_log;
 
 void writeAll() {
     tile.write_board();
@@ -82,8 +83,9 @@ void run_game() {
     while (true) {
 		if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) { // Escape key (pausing)
             system("cls");
-            menu.select_menu();
+            menu.current_id = 3;
 			menu.print_menu();
+			Sleep(500);
             return;
         }
 
@@ -207,6 +209,13 @@ void start_program() {
                 if (menu.current_id == 1) {
                     menu.print_menu();
                 }
+                game_log += std::to_string(menu.current_id) + "\n";
+				Sleep(500);
+            }
+            if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
+                system("cls");
+                menu.current_id == 5;
+                return;
             }
         }
 
@@ -215,7 +224,23 @@ void start_program() {
 			run_game();
 		}
 
-        while (menu.current_id == 5) {
+        while (menu.current_id == 6) {
+            save_file();
+			menu.current_id = 3;
+			system("cls");
+			menu.print_menu();
+			Sleep(50);
+        }
+
+        while (menu.current_id == 7) {
+            load_file();
+            menu.current_id = 3;
+            system("cls");
+            menu.print_menu();
+            Sleep(50);
+        }
+
+        while (menu.current_id == 5 || menu.current_id == -1) {
 			system("cls");
             std::cout << "Goodbye!";
             return;

@@ -63,9 +63,15 @@ public:
 	}
 
 	void select_menu() {
-		int select_menu = button_menu_ids[find_index(menu_ids, current_id)][current_button];	
+		int idx = find_index(menu_ids, current_id);
+		if (idx == -1)
+			return;
+		if (current_button < 0 || current_button >= button_menu_ids[idx].size())
+			return;
+		int select_menu = button_menu_ids[idx][current_button];
+		if (find_index(menu_ids, select_menu) == -1)
+			return;
 		current_button = 0;
-		select_button(0);
 		current_id = select_menu;
 	}
 
